@@ -17,40 +17,41 @@ class GPRun{
             width = trail.GetWidth();
             height = trail.GetHeight();
             MoveTo(0,0);
+            isToroidal = GetConfig().Fetch<int>("IS_TOROIDAL") == 1;
         }
-        size_t Run(bool print = false){
+        size_t Run(bool print = false, std::ostream& oss = std::cout){
             GPNode root = tree.GetRoot();
-            if(print) {
-                Print();
-                std::cout << std::endl;
+            if(print){
+                Print(oss);
+                oss << std::endl;
             }
             for(int i = 0; i < GetConfig().Fetch<int>("NUM_STEPS"); i++){
                 EvaluateNode(root);
                 if(print) {
-                    Print();
-                    std::cout << std::endl;
+                    Print(oss);
+                    oss << std::endl;
                 }
             }
             return foodCounter;
         }
-        void Print(){
+        void Print(std::ostream& oss =std::cout){
             for(int j = 0; j < height; j++){
                 for(int i = 0; i < width; i++){
                     if(i == x && j == y){
                         if(dir == NORTH)
-                            std::cout << "^";
+                            oss << "^";
                         else if(dir == SOUTH)
-                            std::cout << "v";
+                            oss << "v";
                         else if(dir == EAST)
-                            std::cout << ">";
+                            oss << ">";
                         else if(dir == WEST)
-                            std::cout << "<";
+                            oss << "<";
                     }
                     else{
-                        std::cout << (int)trail.GetAt(i,j);
+                        oss << (int)trail.GetAt(i,j);
                     }
                 }
-                std::cout << std::endl;
+                oss << std::endl;
             }
         } 
     private:
@@ -77,14 +78,7 @@ class GPRun{
                     dir = (dir - 1) % 4;
                     return false;
                 case NODE_FORWARD:
-                    if(dir == NORTH)
-                        MoveTo(x, (y - 1) % height);
-                    else if(dir == SOUTH)
-                        MoveTo(x, (y + 1) % height);
-                    else if(dir == EAST)
-                        MoveTo((x + 1) % width, y);
-                    else if(dir == WEST)
-                        MoveTo((x - 1) % width, y);
+                    MoveForward();
                     return false;
                 case NODE_IS_FACING_FOOD:
                     return IsFacingFood();
@@ -99,6 +93,29 @@ class GPRun{
                 default:
                     return false;
                 
+            }
+        }
+        void MoveForward(){
+            if(isToroidal){
+                if(dir == NORTH)
+                    MoveTo(x, (y - 1) % height);
+                else if(dir == SOUTH)
+                    MoveTo(x, (y + 1) % height);
+                else if(dir == EAST)
+                    MoveTo((x + 1) % width, y);
+                else if(dir == WEST)
+                    MoveTo((x - 1) % width, y);
+            }
+            else{
+                if(dir == NORTH){
+                    MoveTo(x, (y == 0) ? y : y - 1);
+                }
+                else if(dir == SOUTH)
+                    MoveTo(x, (y == height-1) ? y : y + 1);
+                else if(dir == EAST)
+                    MoveTo((x == height - 1) ? x : x + 1, y);
+                else if(dir == WEST)
+                    MoveTo((x == 0) ? x : x - 1, y);
             }
         }
         void MoveTo(size_t x_, size_t y_){
@@ -118,5 +135,6 @@ class GPRun{
         size_t height = 0;
         size_t foodCounter = 0;
         const GPTree tree;
+        bool isToroidal = false;
         Trail trail;
 };

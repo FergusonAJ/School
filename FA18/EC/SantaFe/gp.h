@@ -43,10 +43,12 @@ public:
     }
     
     void Run(){
-        std::ofstream fitFP, orgFP;
+        std::ofstream fitFP, orgFP, bestFP, selectFP, rankFP;
         fitFP.open("fitness.csv", std::ios::out | std::ios::trunc);
         fitFP << "gen,best,avg,worst\n";
         orgFP.open("orgList.txt", std::ios::out| std::ios::trunc);
+        bestFP.open("best.txt", std::ios::out| std::ios::trunc);
+        selectFP.open("select.txt", std::ios::out | std::ios::trunc);
         InitPop();
         std::cout << "Start:" << std::endl;
         SortPop();
@@ -58,17 +60,17 @@ public:
             //gpRun.Run(true);
         }
         for(int gen = 0; gen < numGens; gen++){
-            std::cout << gen << std::endl;
+            std::cout << gen << " - " << trail.GetTotalFood() << std::endl;
             std::vector<int> idxVec = ParentSelect(popSize);
             int idxA, idxB;
             offspring.clear();
             while(offspring.size() < popSize * offspringFactor){
                 idxA = floor(((float)rand() / RAND_MAX) * idxVec.size());
                 GPInd A = pop[idxVec[idxA]];
-                //idxVec.erase(idxVec.begin() + idxA);
                 idxB = floor(((float)rand() / RAND_MAX) * idxVec.size());
                 GPInd B = pop[idxVec[idxB]];
-                //idxVec.erase(idxVec.begin() + idxB);
+//                std::cout << idxVec[idxA] << " x " << idxVec[idxB] << std::endl;
+//                selectFP << idxVec[idxA] << "\n" << idxVec[idxB] << "\n";
                 if((float)rand() / RAND_MAX > crossRate){
                     offspring.push_back(A);
                     offspring.push_back(B);
@@ -125,11 +127,17 @@ public:
         for(int i = pop.size() - 1; i < pop.size(); i++){
             std::cout << pop[i].fitness << std::endl;
             std::cout << pop[i].tree.GetString() << std::endl;
+            bestFP << pop[i].fitness << std::endl;
+            bestFP << pop[i].tree.GetString() << std::endl;
             GPRun gpRun(pop[i].tree, trail);
-            gpRun.Run(true);
+            int food = gpRun.Run(true, bestFP);
+            bestFP << "Food eaten: " << food << " / " << trail.GetTotalFood();
+            
         }
         fitFP.close();
         orgFP.close();
+        bestFP.close();
+        selectFP.close();
     }
 
 private:
@@ -172,6 +180,18 @@ private:
             }
         }
         return vec;
+    }
+    
+    int SelectIndex(){
+        double rnd = (double)rand() / RAND_MAX;
+        double sum = 0;
+        for (size_t i = 0; i < pop.size(); i++){
+            sum += pop[i].prob;
+            if(sum > rnd){
+                return i;
+            }
+        }
+        return 0;
     }
 
 private:

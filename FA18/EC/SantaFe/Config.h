@@ -30,6 +30,7 @@ void ConfigInit(ConfigLoader& config){
     config.Register("WIDTH", loader_int, delete_int);
     config.Register("HEIGHT", loader_int, delete_int);
     config.Register("NUM_STEPS", loader_int, delete_int);
+    config.Register("IS_TOROIDAL", loader_int, delete_int);
 }
 
 ConfigLoader & GetConfig(){

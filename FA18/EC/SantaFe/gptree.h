@@ -23,23 +23,38 @@ public:
     std::tuple<GPTree, GPTree> Cross(GPTree& other, int maxDepth){
         std::tuple<GPNode*, int> A = GetCrossoverPoint(); 
         std::tuple<GPNode*, int> B = other.GetCrossoverPoint();
-        if(std::get<1>(A) == -1 || std::get<1>(B) == -1){
+        if(std::get<1>(A) == -1 && std::get<1>(B) == -1){
             return std::make_tuple(*this, other);
+        }
+        else if(std::get<1>(A) == -1){
+            GPNode A_c = GetRoot();
+            GPNode B_c = std::get<0>(B)->GetChild(std::get<1>(B));
+            SetRoot(B_c);
+            std::get<0>(B)->SetChild(std::get<1>(B), A_c);
+        }
+        else if(std::get<1>(B) == -1){
+            GPNode A_c = std::get<0>(A)->GetChild(std::get<1>(A));
+            GPNode B_c = other.GetRoot();
+            other.SetRoot(A_c);
+            std::get<0>(A)->SetChild(std::get<1>(A), B_c);
         }
         else{
            GPNode A_c = std::get<0>(A)->GetChild(std::get<1>(A));
            GPNode B_c = std::get<0>(B)->GetChild(std::get<1>(B));
            std::get<0>(A)->SetChild(std::get<1>(A), B_c);
            std::get<0>(B)->SetChild(std::get<1>(B), A_c);
-           Prune(maxDepth);
-           other.Prune(maxDepth);
         }
+       Prune(maxDepth);
+       other.Prune(maxDepth);
     }
     std::tuple<GPNode*, int> GetCrossoverPoint(){
         return root.GetCrossoverPoint();
     }
     void Prune(int maxDepth){
         root.Prune(maxDepth);
+    }
+    void SetRoot(GPNode& node){
+        root = node;
     }
 private:
     GPNode root;
