@@ -43,24 +43,16 @@ public:
     }
     
     void Run(){
-        std::ofstream fitFP, orgFP, bestFP, selectFP, rankFP;
+        std::ofstream fitFP, bestFP;
         fitFP.open("fitness.csv", std::ios::out | std::ios::trunc);
         fitFP << "gen,best,avg,worst\n";
-        orgFP.open("orgList.txt", std::ios::out| std::ios::trunc);
         bestFP.open("best.txt", std::ios::out| std::ios::trunc);
-        selectFP.open("select.txt", std::ios::out | std::ios::trunc);
         InitPop();
-        std::cout << "Start:" << std::endl;
         SortPop();
         RankPop();
-        for(int i = pop.size() - 1; i < pop.size(); i++){
-            std::cout << pop[i].fitness << std::endl;
-            std::cout << pop[i].tree.GetString() << std::endl;
-            //GPRun gpRun(pop[i].tree, trail);
-            //gpRun.Run(true);
-        }
+        std::cout <<"Starting Best Fitness: " << pop[pop.size() - 1].fitness << std::endl;
         for(int gen = 0; gen < numGens; gen++){
-            std::cout << gen << " - " << trail.GetTotalFood() << std::endl;
+            std::cout << gen << std::endl;
             std::vector<int> idxVec = ParentSelect(popSize);
             int idxA, idxB;
             offspring.clear();
@@ -69,8 +61,6 @@ public:
                 GPInd A = pop[idxVec[idxA]];
                 idxB = floor(((float)rand() / RAND_MAX) * idxVec.size());
                 GPInd B = pop[idxVec[idxB]];
-//                std::cout << idxVec[idxA] << " x " << idxVec[idxB] << std::endl;
-//                selectFP << idxVec[idxA] << "\n" << idxVec[idxB] << "\n";
                 if((float)rand() / RAND_MAX > crossRate){
                     offspring.push_back(A);
                     offspring.push_back(B);
@@ -87,18 +77,12 @@ public:
                     offspring.push_back(B_);
                 }
             }
-            while(offspring.size() < popSize * (offspringFactor + randomFactor)){
-                GPTree tree(maxDepth, maxInitDepth);
-                GPRun gpRun(tree, trail);
-                double fitness = (double)gpRun.Run() / trail.GetTotalFood();
-                offspring.push_back(GPInd(tree, fitness, 0)); 
-            }
             if(!keepParents)
                 pop.clear();
             for(GPInd ind : offspring){
                 if((float)rand() / RAND_MAX < mutRate){
-                    GPRun gpRun(ind.tree, trail);
                     ind.tree.Mutate(maxDepth);
+                    GPRun gpRun(ind.tree, trail);
                     ind.fitness = (double)gpRun.Run() / trail.GetTotalFood();
                 }
                 pop.push_back(ind);
@@ -106,6 +90,15 @@ public:
             SortPop();
             RankPop();
             pop.erase(pop.begin(), pop.end() - popSize);
+            pop.erase(pop.begin(), pop.end() - floor((float) popSize * (1 - randomFactor)));
+            while(pop.size() < popSize){
+                GPTree tree(maxDepth, maxInitDepth);
+                GPRun gpRun(tree, trail);
+                double fitness = (double)gpRun.Run() / trail.GetTotalFood();
+                pop.push_back(GPInd(tree, fitness, 0)); 
+            }
+            SortPop();
+            RankPop();
             float sum = 0;
             for(GPInd ind : pop){
                 sum += ind.fitness;
@@ -114,30 +107,23 @@ public:
             fitFP << pop[pop.size() - 1].fitness << ",";
             fitFP << (sum / pop.size()) << ",";
             fitFP << pop[0].fitness  << "\n";
-            /*
-            orgFP << "GEN: " << gen << "\n";
-            for(int i = 0; i < pop.size(); i++){
-                orgFP << pop[i].fitness << "\n";
-                orgFP << pop[i].tree.GetString() << "\n\n";
+            if(pop[pop.size() - 1].fitness >= 0.999f){
+                std::cout << "Perfect solution found!" << std::endl;
+                std::cout << "It only took " << gen << " generations!" << std::endl;
+                break;
             }
-            orgFP << "\n\n\n";
-            */
         }
         std::cout << "End:" << std::endl;
-        for(int i = pop.size() - 1; i < pop.size(); i++){
-            std::cout << pop[i].fitness << std::endl;
-            std::cout << pop[i].tree.GetString() << std::endl;
-            bestFP << pop[i].fitness << std::endl;
-            bestFP << pop[i].tree.GetString() << std::endl;
-            GPRun gpRun(pop[i].tree, trail);
-            int food = gpRun.Run(true, bestFP);
-            bestFP << "Food eaten: " << food << " / " << trail.GetTotalFood();
-            
-        }
+        int bestIdx = pop.size() - 1;    
+        std::cout << pop[bestIdx].fitness << std::endl;
+        std::cout << pop[bestIdx].tree.GetString() << std::endl;
+        bestFP << "Fitness:" << pop[bestIdx].fitness << std::endl;
+        bestFP << "Tree:\n" << pop[bestIdx].tree.GetString() << std::endl;
+        GPRun gpRun(pop[bestIdx].tree, trail);
+        int food = gpRun.Run(true, bestFP);
+        bestFP << "Food eaten: " << food << " / " << trail.GetTotalFood();
         fitFP.close();
-        orgFP.close();
         bestFP.close();
-        selectFP.close();
     }
 
 private:
