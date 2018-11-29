@@ -45,6 +45,8 @@ int main(int argc, char ** argv)
     size_t eliteCount = GetConfig().Fetch<int>("ELITE_COUNT"); 
     size_t eliteCopies = GetConfig().Fetch<int>("ELITE_COPIES");
     std::string fitFunStr = GetConfig().Fetch<std::string>("FIT_FUN");
+    std::string outputDir = GetConfig().Fetch<std::string>("OUTPUT_DIR");
+    std::ostringstream oss;
  
     //World Setup
     emp::World<emp::vector<bool>> world(random);
@@ -61,7 +63,9 @@ int main(int argc, char ** argv)
         std::cout << "Using end state matching for fitness." << std::endl;
     }
     world.SetFitFun(fit_fun);
-    world.SetupFitnessFile("./output/fitness.csv", true);
+    oss.str("");
+    oss << outputDir << "/fitness.csv";
+    world.SetupFitnessFile(oss.str(), true);
     //world.SetupPopulationFile("./output/pop.csv", true);
     world.SetCache(true);
 
@@ -86,8 +90,8 @@ int main(int argc, char ** argv)
     // Last generation image generation
     std::cout << "Last generation finished! Finishing up..." << std::endl; 
     std::fstream lastGenFP;
-    std::ostringstream oss;
-    oss << "./output/BASE_Last_Gen_" << GetTimestamp() << rand() << ".txt";
+    oss.str("");
+    oss << outputDir << "/BASE_Last_Gen_" << GetTimestamp() << rand() << ".txt";
     lastGenFP.open(oss.str(), std::ios::out | std::ios::trunc);
     for (size_t id = 0; id < world.GetSize(); id++) {
         lastGenFP << "ID: " << id << std::endl;

@@ -47,6 +47,8 @@ void ConfigInit(ConfigLoader& config){
     config.Register("MUST_MOVE", loader_bool, delete_bool);
 
     config.Register("VIZ_ONLY", loader_bool, delete_bool);
+    
+    config.Register("OUTPUT_DIR", loader_string, delete_string);
 }
 
 ConfigLoader & GetConfig(){

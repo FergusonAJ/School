@@ -46,6 +46,8 @@ int main(int argc, char ** argv)
     size_t eliteCopies = GetConfig().Fetch<int>("ELITE_COPIES");
     size_t numRulesets = GetConfig().Fetch<int>("NUM_RULESETS");
     std::string fitFunStr = GetConfig().Fetch<std::string>("FIT_FUN");
+    std::string outputDir = GetConfig().Fetch<std::string>("OUTPUT_DIR");
+    std::ostringstream oss;
 
  
     //IC World Setup
@@ -111,7 +113,6 @@ int main(int argc, char ** argv)
     }
     std::fstream icFP;
     std::fstream rulesetFP;
-    std::ostringstream oss;
     //Main Loop
     for(size_t i = 0; i < numGens; i++){
         worldRuleset.ClearCache();
@@ -139,7 +140,7 @@ int main(int argc, char ** argv)
         }
         //Save off members of both populations to check convergence
         oss.str("");
-        oss << "./output/IC_Gen_" << i << ".txt";
+        oss << outputDir << "/IC_Gen_" << i << ".txt";
         icFP.open(oss.str(), std::ios::out | std::ios::trunc);
         for (size_t id = 0; id < worldIC.GetSize(); id++) {
             icFP << "IC ID: " << id << std::endl;
@@ -149,7 +150,7 @@ int main(int argc, char ** argv)
         icFP.close(); 
         
         oss.str("");
-        oss << "./output/Ruleset_Gen_" << i << ".txt";
+        oss << outputDir << "/Ruleset_Gen_" << i << ".txt";
         rulesetFP.open(oss.str(), std::ios::out | std::ios::trunc);
         for (size_t id = 0; id < worldRuleset.GetSize(); id++) {
             rulesetFP << "Ruleset ID: " << id << std::endl;
@@ -167,7 +168,7 @@ int main(int argc, char ** argv)
     std::cout << "Last generation finished! Finishing up..." << std::endl; 
    
     oss.str(""); 
-    oss << "./output/CLASSIC_IC_Last_Gen_" << GetTimestamp() << rand() << ".txt";
+    oss << outputDir << "/CLASSIC_IC_Last_Gen_" << GetTimestamp() << rand() << ".txt";
     icFP.open(oss.str(), std::ios::out | std::ios::trunc);
     for (size_t id = 0; id < worldIC.GetSize(); id++) {
         icFP << "IC ID: " << id << std::endl;
