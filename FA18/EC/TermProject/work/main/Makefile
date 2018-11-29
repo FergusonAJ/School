@@ -15,7 +15,7 @@ CFLAGS_native_debug := $(CFLAGS_all) $(OFLAGS_native_debug)
 CFLAGS_native_grumpy := $(CFLAGS_all) $(OFLAGS_native_grumpy)
 
 
-SFMLFlags := -lsfml-graphics -lsfml-system -lsfml-window
+SFMLFlags := #-lsfml-graphics -lsfml-system -lsfml-window
 
 TARGETS := ./CA ./CA_Control ./CA_Classic
 

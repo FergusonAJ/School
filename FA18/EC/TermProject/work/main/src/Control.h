@@ -8,19 +8,6 @@ std::vector<bool> GetRandomOrg_Control(emp::Random& rand){
     return vec;
 }
 
-
-
-std::function<size_t(std::vector<bool> &, emp::Random &)> mutate_fun_control = [](std::vector<bool> & org, emp::Random & rand) {
-    size_t count = 0;
-    for(size_t i = 0; i < org.size(); i++){
-        if(rand.GetDouble() < mutRate){
-            org[i] = !org[i];
-            count++;
-        } 
-    }  
-    return count;
-};
-
 std::function<void(std::vector<bool> &, std::ostream &)> print_fun_control = [](std::vector<bool> & org, std::ostream & os) {
     os << "B";
     for(int i = 0; i < 9; i++){

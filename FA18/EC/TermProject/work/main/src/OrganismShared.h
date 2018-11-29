@@ -15,12 +15,11 @@
 
 
 empCA::CellularAutomaton<unsigned char> ca;
-empCA::Visualizer<unsigned char> viz;
 std::function<unsigned char(emp::Random &)> spawnFunc;
 int width, height, subWidth, subHeight, subX, subY, numSteps, checkSteps, numCollaborators;
 bool canMove, mustMove;
 std::string name;
-float mutRate;
+float mutRateFactor;
 std::vector<unsigned char> endState;
 int max = 0;
 emp::Random* randPtr;
@@ -33,7 +32,7 @@ void Initialize(emp::Random* ptr){
     subX = GetConfig().Fetch<int>("SUB_X");
     subY = GetConfig().Fetch<int>("SUB_Y");
     numSteps = GetConfig().Fetch<int>("NUM_STEPS");
-    mutRate = (1.0f / GetConfig().Fetch<float>("MUT_RATE_RECIPROCAL"));
+    mutRateFactor = GetConfig().Fetch<float>("MUT_RATE_SCALE");
     name = GetConfig().Fetch<std::string>("AUTOMATON");
     checkSteps = GetConfig().Fetch<int>("CHECK_STEPS");
     numCollaborators = GetConfig().Fetch<int>("NUM_COLLABORATORS");
@@ -44,16 +43,6 @@ void Initialize(emp::Random* ptr){
     ca.SetFunctions(conwayStruct);
     spawnFunc = conwayStruct.func_spawn;
     randPtr = ptr;
-}
-
-void VisualizerInit(empCA::Visualizer<unsigned char>& v){
-    viz.SetFunctions(conwayStruct);
-}
-
-empCA::Visualizer<unsigned char>* GetVisualizer(size_t width, size_t height){
-    viz.Init(width, height, &ca);
-    VisualizerInit(viz);
-    return &viz;
 }
 
 double GetMatchFitness(){
@@ -82,3 +71,15 @@ double GetStaticRepFitness(){
     std::vector<size_t> validStructures = ca.CheckAllRepeating(checkSteps,canMove,mustMove);
     return (double)validStructures.size(); 
 }
+
+std::function<size_t(std::vector<bool> &, emp::Random &)> mutate_fun_all = [](std::vector<bool> & org, emp::Random & rand) {
+    size_t count = 0;
+    float mutRate = 1.0f / org.size() * mutRateFactor;
+    for(size_t i = 0; i < org.size(); i++){
+        if(rand.GetDouble() < mutRate){
+            org[i] = !org[i];
+            count++;
+        } 
+    }  
+    return count;
+};

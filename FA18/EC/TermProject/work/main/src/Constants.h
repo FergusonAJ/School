@@ -19,7 +19,7 @@ void ConfigInit(ConfigLoader& config){
     config.Register("PCT_CARRY", loader_float, delete_float);
     config.Register("PCT_MUT", loader_float, delete_float);
     config.Register("PCT_CROSS", loader_float, delete_float);
-    config.Register("MUT_RATE_RECIPROCAL", loader_float, delete_float);
+    config.Register("MUT_RATE_SCALE", loader_float, delete_float);
 
     config.Register("WIDTH", loader_int, delete_int);
     config.Register("HEIGHT", loader_int, delete_int);

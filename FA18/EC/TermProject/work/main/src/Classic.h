@@ -34,19 +34,6 @@ std::vector<bool> GetRandomOrg_Classic_Ruleset(emp::Random& rand){
     return vec;
 }
 
-//Mutate function (works for both)
-std::function<size_t(std::vector<bool> &, emp::Random &)> mutate_fun_classic = [](std::vector<bool> & org, emp::Random & rand) {
-    size_t count = 0;
-    float indivMutRate = 1.0f / org.size();
-    for(size_t i = 0; i < org.size(); i++){
-        if(rand.GetDouble() < indivMutRate){
-            org[i] = !org[i];
-            count++;
-        } 
-    }  
-    return count;
-};
-
 //Print functions
 std::function<void(std::vector<bool> &, std::ostream &)> print_fun_classic_ic = [](std::vector<bool> & org, std::ostream & os) {
     for(int y = 0; y < subHeight; y++){
@@ -96,16 +83,6 @@ auto fit_fun_static_rep_classic_ic = [](std::vector<bool> & org){
         if(score > max)
             max = score;
     }
-    /*
-    if(score > max){
-        max = score;
-        print_fun_control(org, std::cout);
-        ca.GroupStart();
-        ca.PrintGroupFlat(std::cout);
-        std::cout << std::endl;
-        std::cout << score << std::endl;
-    }   
-    */
     return max;
 };
 
@@ -135,14 +112,5 @@ auto fit_fun_static_rep_classic_ruleset = [](std::vector<bool> & org){
         if(score > max)
             max = score;
     }
-    /*
-    if(score > max){
-        max = score;
-        print_fun_control(org, std::cout);
-        ca.GroupStart();
-        ca.PrintGroupFlat(std::cout);
-        std::cout << score << std::endl;
-    }
-    */
     return max;
 };
