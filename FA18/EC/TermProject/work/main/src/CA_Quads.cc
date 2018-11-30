@@ -151,7 +151,7 @@ int main(int argc, char ** argv)
         for(size_t ic = 0; ic < 4; ic++){
             //Save off members of both populations to check convergence
             oss.str("");
-            oss << outputDir << "/IC_" << ic << "_Gen_" << i << ".txt";
+            oss << outputDir << "/QUADS_IC_" << ic << "_Gen_" << i << ".txt";
             icFP.open(oss.str(), std::ios::out | std::ios::trunc);
             for (size_t id = 0; id < worldICs[ic]->GetSize(); id++) {
                 icFP << "IC ID: " << id << std::endl;
@@ -165,7 +165,7 @@ int main(int argc, char ** argv)
         } 
         //Ruleset
         oss.str("");
-        oss << outputDir << "/Ruleset_Gen_" << i << ".txt";
+        oss << outputDir << "/QUADS_Ruleset_Gen_" << i << ".txt";
         rulesetFP.open(oss.str(), std::ios::out | std::ios::trunc);
         for (size_t id = 0; id < worldRuleset.GetSize(); id++) {
             rulesetFP << "Ruleset ID: " << id << std::endl;
