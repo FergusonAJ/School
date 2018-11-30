@@ -1,5 +1,8 @@
 CA
 CA_Classic
 CA_Control
+CA_Quads
+output
 Rplots.pdf
 viz/output.png
+copyFromHPCC.sh

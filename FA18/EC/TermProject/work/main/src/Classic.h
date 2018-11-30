@@ -1,3 +1,4 @@
+#pragma once
 #include "OrganismShared.h"
 #include "Evolve/World.h"
 

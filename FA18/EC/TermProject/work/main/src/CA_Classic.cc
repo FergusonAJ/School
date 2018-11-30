@@ -19,7 +19,6 @@
 #include "tools/string_utils.h"
 
 #include "./Constants.h"
-#include "./Control.h"
 #include "./Classic.h"
 #include "./config/ConfigLoader.h"
 #include "./util.h"
@@ -130,14 +129,6 @@ int main(int argc, char ** argv)
         if(eliteCount > 0 && eliteCopies > 0)
             EliteSelect(worldRuleset, eliteCount, eliteCopies);
         TournamentSelect(worldRuleset, tourneySize, tourneyCount);
-        for (size_t id = 0; id < worldIC.GetSize(); id++) {
-            std::cout << "IC ID: " << id << " - > ";
-            std::cout << worldIC.GetCache(id) << std::endl;
-        }
-        for (size_t id = 0; id < worldRuleset.GetSize(); id++) {
-            std::cout << "R ID: " << id << " - > ";
-            std::cout << worldRuleset.GetCache(id) << std::endl;
-        }
         //Save off members of both populations to check convergence
         oss.str("");
         oss << outputDir << "/IC_Gen_" << i << ".txt";
@@ -179,7 +170,7 @@ int main(int argc, char ** argv)
     icFP.close(); 
         
     oss.str("");
-    oss << "./output/CLASSIC_Ruleset_Last_Gen_" << GetTimestamp() << rand() << ".txt";
+    oss << "./output/CLASSIC_Ruleset_Last_Gen_" << GetTimestamp() << "_" << rand() << ".txt";
     rulesetFP.open(oss.str(), std::ios::out | std::ios::trunc);
     for (size_t id = 0; id < worldRuleset.GetSize(); id++) {
         rulesetFP << "Ruleset ID: " << id << std::endl;

@@ -20,7 +20,6 @@
 
 #include "./Constants.h"
 #include "./Control.h"
-#include "./Classic.h"
 #include "./config/ConfigLoader.h"
 #include "./util.h"
 
@@ -91,7 +90,7 @@ int main(int argc, char ** argv)
     std::cout << "Last generation finished! Finishing up..." << std::endl; 
     std::fstream lastGenFP;
     oss.str("");
-    oss << outputDir << "/BASE_Last_Gen_" << GetTimestamp() << rand() << ".txt";
+    oss << outputDir << "/BASE_Last_Gen_" << GetTimestamp() << "_" << rand() << ".txt";
     lastGenFP.open(oss.str(), std::ios::out | std::ios::trunc);
     for (size_t id = 0; id < world.GetSize(); id++) {
         lastGenFP << "ID: " << id << std::endl;

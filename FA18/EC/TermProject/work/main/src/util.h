@@ -17,9 +17,8 @@ std::vector<unsigned char> BitstringToVec(std::vector<bool> bs, size_t offset = 
 }
 
 std::string GetTimestamp(){
-    std::cout << "Testing..." << std::endl;
     std::time_t t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     char buff[100];
-    std::strftime(buff, sizeof(buff), "%Y_%m_%d_%M_%S", std::localtime(&t));
+    std::strftime(buff, sizeof(buff), "%Y_%m_%d_%H_%M_%S", std::localtime(&t));
     return std::string(buff);
 }

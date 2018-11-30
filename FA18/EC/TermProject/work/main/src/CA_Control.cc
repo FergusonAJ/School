@@ -20,7 +20,6 @@
 
 #include "./Constants.h"
 #include "./Control.h"
-#include "./Classic.h"
 #include "./config/ConfigLoader.h"
 #include "./util.h"
 
@@ -47,6 +46,8 @@ int main(int argc, char ** argv)
     std::string fitFunStr = GetConfig().Fetch<std::string>("FIT_FUN");
     std::string outputDir = GetConfig().Fetch<std::string>("OUTPUT_DIR");
     std::ostringstream oss;
+    int randID = rand();
+
  
     //World Setup
     emp::World<emp::vector<bool>> world(random);
@@ -64,7 +65,7 @@ int main(int argc, char ** argv)
     }
     world.SetFitFun(fit_fun);
     oss.str("");
-    oss << outputDir << "/fitness.csv";
+    oss << outputDir << "/CONTROL_fitness_" << "_" <<  randID << ".csv";
     world.SetupFitnessFile(oss.str(), true);
     //world.SetupPopulationFile("./output/pop.csv", true);
     world.SetCache(true);
@@ -94,7 +95,7 @@ int main(int argc, char ** argv)
     std::cout << "Last generation finished! Finishing up..." << std::endl; 
     std::fstream lastGenFP;
     oss.str("");
-    oss << outputDir << "/CONTROL_Last_Gen_" << GetTimestamp() << rand() << ".txt";
+    oss << outputDir << "/CONTROL_Last_Gen_" << GetTimestamp() << "_" <<  randID << ".txt";
     lastGenFP.open(oss.str(), std::ios::out | std::ios::trunc);
     for (size_t id = 0; id < world.GetSize(); id++) {
         lastGenFP << "ID: " << id << std::endl;

@@ -17,7 +17,7 @@ CFLAGS_native_grumpy := $(CFLAGS_all) $(OFLAGS_native_grumpy)
 
 SFMLFlags := #-lsfml-graphics -lsfml-system -lsfml-window
 
-TARGETS := ./CA ./CA_Control ./CA_Classic
+TARGETS := ./CA ./CA_Control ./CA_Classic ./CA_Quads
 
 EVO_DEPEND := ../../source/Evolve/World.h
 
