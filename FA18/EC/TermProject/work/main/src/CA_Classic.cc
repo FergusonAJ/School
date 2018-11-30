@@ -48,6 +48,20 @@ int main(int argc, char ** argv)
     std::string fitFunStr = GetConfig().Fetch<std::string>("FIT_FUN");
     std::string outputDir = GetConfig().Fetch<std::string>("OUTPUT_DIR");
     std::ostringstream oss;
+    std::string idStr;
+
+    oss.str("");
+    if(argc > 1){
+        for(int i = 1; i < argc; i++){
+            oss << "_" << argv[i];
+        }
+    }
+    else
+        oss << "_" << rand();
+    idStr = oss.str();
+    oss.str("");
+
+    std::cout << "ID string for this run: " << idStr << std::endl;
 
  
     //IC World Setup
@@ -132,7 +146,7 @@ int main(int argc, char ** argv)
         TournamentSelect(worldRuleset, tourneySize, tourneyCount);
         //Save off members of both populations to check convergence
         oss.str("");
-        oss << outputDir << "/IC_Gen_" << i << ".txt";
+        oss << outputDir << "/CLASSIC_IC_Gen_" << i << idStr << ".txt";
         icFP.open(oss.str(), std::ios::out | std::ios::trunc);
         for (size_t id = 0; id < worldIC.GetSize(); id++) {
             icFP << "IC ID: " << id << std::endl;
@@ -142,7 +156,7 @@ int main(int argc, char ** argv)
         icFP.close(); 
         
         oss.str("");
-        oss << outputDir << "/Ruleset_Gen_" << i << ".txt";
+        oss << outputDir << "/CLASSIC_Ruleset_Gen_" << i << idStr<< ".txt";
         rulesetFP.open(oss.str(), std::ios::out | std::ios::trunc);
         for (size_t id = 0; id < worldRuleset.GetSize(); id++) {
             rulesetFP << "Ruleset ID: " << id << std::endl;
@@ -160,7 +174,7 @@ int main(int argc, char ** argv)
     std::cout << "Last generation finished! Finishing up..." << std::endl; 
    
     oss.str(""); 
-    oss << outputDir << "/CLASSIC_IC_Last_Gen_" << GetTimestamp() << rand() << ".txt";
+    oss << outputDir << "/CLASSIC_IC_Last_Gen" << idStr << ".txt";
     icFP.open(oss.str(), std::ios::out | std::ios::trunc);
     for (size_t id = 0; id < worldIC.GetSize(); id++) {
         icFP << "IC ID: " << id << std::endl;
@@ -171,12 +185,12 @@ int main(int argc, char ** argv)
     icFP.close(); 
         
     oss.str("");
-    oss << "./output/CLASSIC_Ruleset_Last_Gen_" << GetTimestamp() << "_" << rand() << ".txt";
+    oss << "./output/CLASSIC_Ruleset_Last_Gen"  << idStr << ".txt";
     rulesetFP.open(oss.str(), std::ios::out | std::ios::trunc);
     for (size_t id = 0; id < worldRuleset.GetSize(); id++) {
         rulesetFP << "Ruleset ID: " << id << std::endl;
         rulesetFP << "Fitness: " << worldRuleset.GetCache(id) << std::endl;
-        print_fun_classic_ruleset(worldRuleset.GetOrg(id), icFP);
+        print_fun_classic_ruleset(worldRuleset.GetOrg(id), rulesetFP);
         rulesetFP << std::endl;
     }
     //Finished! 

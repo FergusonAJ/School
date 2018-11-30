@@ -56,7 +56,7 @@ int main(int argc, char ** argv)
         }
     }
     else
-        oss << rand();
+        oss << "_" << rand();
     idStr = oss.str();
     oss.str("");
 
@@ -78,7 +78,7 @@ int main(int argc, char ** argv)
     }
     world.SetFitFun(fit_fun);
     oss.str("");
-    oss << outputDir << "/CONTROL_fitness_" << "_" <<  idStr << ".csv";
+    oss << outputDir << "/CONTROL_fitness" <<  idStr << ".csv";
     world.SetupFitnessFile(oss.str(), true);
     //world.SetupPopulationFile("./output/pop.csv", true);
     world.SetCache(true);
@@ -108,7 +108,7 @@ int main(int argc, char ** argv)
     std::cout << "Last generation finished! Finishing up..." << std::endl; 
     std::fstream lastGenFP;
     oss.str("");
-    oss << outputDir << "/CONTROL_Last_Gen_" << GetTimestamp() << "_" <<  idStr << ".txt";
+    oss << outputDir << "/CONTROL_Last_Gen" <<  idStr << ".txt";
     lastGenFP.open(oss.str(), std::ios::out | std::ios::trunc);
     for (size_t id = 0; id < world.GetSize(); id++) {
         lastGenFP << "ID: " << id << std::endl;

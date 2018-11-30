@@ -47,7 +47,19 @@ int main(int argc, char ** argv)
     std::string fitFunStr = GetConfig().Fetch<std::string>("FIT_FUN");
     std::string outputDir = GetConfig().Fetch<std::string>("OUTPUT_DIR");
     std::ostringstream oss;
+    std::string idStr;
 
+    oss.str("");
+    if(argc > 1){
+        for(int i = 1; i < argc; i++){
+            oss << "_" << argv[i];
+        }
+    }
+    else
+        oss << "_" << rand();
+    idStr = oss.str();
+    oss.str("");
+    std::cout << "ID string for this run: " << idStr << std::endl;
 
     std::vector<emp::World<emp::vector<bool>>*> worldICs; 
     emp::World<emp::vector<bool>> worldICs1(random);
@@ -55,13 +67,13 @@ int main(int argc, char ** argv)
     emp::World<emp::vector<bool>> worldICs2(random); 
     worldICs.push_back(&worldICs2); 
     emp::World<emp::vector<bool>> worldICs3(random); 
-    worldICs.push_back(&worldICs2); 
+    worldICs.push_back(&worldICs3); 
     emp::World<emp::vector<bool>> worldICs4(random); 
-    worldICs.push_back(&worldICs2); 
+    worldICs.push_back(&worldICs4); 
     //IC World Setup
     for(size_t ic = 0; ic < 4; ic++){
         worldICs[ic]->SetPopStruct_Mixed(false);
-        worldICs[ic]->SetPrintFun(print_fun_classic_ic);
+        worldICs[ic]->SetPrintFun(print_fun_quad_ic);
         worldICs[ic]->SetMutFun(mutate_fun_all);
         worldICs[ic]->SetCache(true);
     }
@@ -151,7 +163,7 @@ int main(int argc, char ** argv)
         for(size_t ic = 0; ic < 4; ic++){
             //Save off members of both populations to check convergence
             oss.str("");
-            oss << outputDir << "/QUADS_IC_" << ic << "_Gen_" << i << ".txt";
+            oss << outputDir << "/QUADS_IC_" << ic << "_Gen_" << i << idStr << ".txt";
             icFP.open(oss.str(), std::ios::out | std::ios::trunc);
             for (size_t id = 0; id < worldICs[ic]->GetSize(); id++) {
                 icFP << "IC ID: " << id << std::endl;
@@ -165,7 +177,7 @@ int main(int argc, char ** argv)
         } 
         //Ruleset
         oss.str("");
-        oss << outputDir << "/QUADS_Ruleset_Gen_" << i << ".txt";
+        oss << outputDir << "/QUADS_Ruleset_Gen_" << i << idStr << ".txt";
         rulesetFP.open(oss.str(), std::ios::out | std::ios::trunc);
         for (size_t id = 0; id < worldRuleset.GetSize(); id++) {
             rulesetFP << "Ruleset ID: " << id << std::endl;
@@ -182,23 +194,23 @@ int main(int argc, char ** argv)
     
     for(size_t ic = 0; ic < 4; ic++){ 
         oss.str(""); 
-        oss << outputDir << "/QUADS_IC_" << ic << "_Last_Gen_" << GetTimestamp() << rand() << ".txt";
+        oss << outputDir << "/QUADS_IC_" << ic << "_Last_Gen" << idStr << ".txt";
         icFP.open(oss.str(), std::ios::out | std::ios::trunc);
         for (size_t id = 0; id < worldICs[ic]->GetSize(); id++) {
             icFP << "IC ID: " << id << std::endl;
             icFP << "Fitness: " << worldICs[ic]->GetCache(id) << std::endl;
-            print_fun_classic_ic(worldICs[ic]->GetOrg(id), icFP);
+            print_fun_quad_ic(worldICs[ic]->GetOrg(id), icFP);
             icFP << std::endl;
         }
         icFP.close(); 
     }
     oss.str("");
-    oss << "./output/QUADS_Ruleset_Last_Gen_" << GetTimestamp() << "_" << rand() << ".txt";
+    oss << "./output/QUADS_Ruleset_Last_Gen" << idStr << ".txt";
     rulesetFP.open(oss.str(), std::ios::out | std::ios::trunc);
     for (size_t id = 0; id < worldRuleset.GetSize(); id++) {
         rulesetFP << "Ruleset ID: " << id << std::endl;
         rulesetFP << "Fitness: " << worldRuleset.GetCache(id) << std::endl;
-        print_fun_classic_ruleset(worldRuleset.GetOrg(id), icFP);
+        print_fun_classic_ruleset(worldRuleset.GetOrg(id), rulesetFP);
         rulesetFP << std::endl;
     }
     //Finished! 
