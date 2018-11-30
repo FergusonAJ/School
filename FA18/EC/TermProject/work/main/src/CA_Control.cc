@@ -47,8 +47,20 @@ int main(int argc, char ** argv)
     std::string fitFunStr = GetConfig().Fetch<std::string>("FIT_FUN");
     std::string outputDir = GetConfig().Fetch<std::string>("OUTPUT_DIR");
     std::ostringstream oss;
-    int randID = rand();
+    std::string idStr;
 
+    oss.str("");
+    if(argc > 1){
+        for(int i = 1; i < argc; i++){
+            oss << "_" << argv[i];
+        }
+    }
+    else
+        oss << rand();
+    idStr = oss.str();
+    oss.str("");
+
+    std::cout << "ID string for this run: " << idStr << std::endl;
  
     //World Setup
     emp::World<emp::vector<bool>> world(random);
@@ -66,7 +78,7 @@ int main(int argc, char ** argv)
     }
     world.SetFitFun(fit_fun);
     oss.str("");
-    oss << outputDir << "/CONTROL_fitness_" << "_" <<  randID << ".csv";
+    oss << outputDir << "/CONTROL_fitness_" << "_" <<  idStr << ".csv";
     world.SetupFitnessFile(oss.str(), true);
     //world.SetupPopulationFile("./output/pop.csv", true);
     world.SetCache(true);
@@ -96,7 +108,7 @@ int main(int argc, char ** argv)
     std::cout << "Last generation finished! Finishing up..." << std::endl; 
     std::fstream lastGenFP;
     oss.str("");
-    oss << outputDir << "/CONTROL_Last_Gen_" << GetTimestamp() << "_" <<  randID << ".txt";
+    oss << outputDir << "/CONTROL_Last_Gen_" << GetTimestamp() << "_" <<  idStr << ".txt";
     lastGenFP.open(oss.str(), std::ios::out | std::ios::trunc);
     for (size_t id = 0; id < world.GetSize(); id++) {
         lastGenFP << "ID: " << id << std::endl;
