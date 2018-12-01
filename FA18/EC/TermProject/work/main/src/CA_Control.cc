@@ -39,7 +39,6 @@ int main(int argc, char ** argv)
     std::vector<unsigned char> endState;
     size_t popSize = GetConfig().Fetch<int>("POP_SIZE"); 
     size_t numGens = GetConfig().Fetch<int>("NUM_GENS"); 
-    size_t numSteps = GetConfig().Fetch<int>("NUM_STEPS"); 
     size_t tourneySize= GetConfig().Fetch<int>("TOURNEY_SIZE"); 
     size_t tourneyCount = GetConfig().Fetch<int>("TOURNEY_COUNT"); 
     size_t eliteCount = GetConfig().Fetch<int>("ELITE_COUNT"); 

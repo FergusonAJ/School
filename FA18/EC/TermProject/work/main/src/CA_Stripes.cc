@@ -19,13 +19,12 @@
 #include "tools/string_utils.h"
 
 #include "./Constants.h"
-#include "./Classic.h"
+#include "./Stripes.h"
 #include "./config/ConfigLoader.h"
 #include "./util.h"
 
 int main(int argc, char ** argv)
 {
-    srand(time(NULL));
     //Load Configuration
     ConfigLoader config;
     ConfigInit(config); 
@@ -59,34 +58,52 @@ int main(int argc, char ** argv)
         oss << "_" << rand();
     idStr = oss.str();
     oss.str("");
-
     std::cout << "ID string for this run: " << idStr << std::endl;
 
- 
+    std::vector<emp::World<emp::vector<bool>>*> worldICs; 
+    emp::World<emp::vector<bool>> worldICs1(random);
+    worldICs.push_back(&worldICs1); 
+    emp::World<emp::vector<bool>> worldICs2(random); 
+    worldICs.push_back(&worldICs2); 
+    emp::World<emp::vector<bool>> worldICs3(random); 
+    worldICs.push_back(&worldICs3); 
+    emp::World<emp::vector<bool>> worldICs4(random); 
+    worldICs.push_back(&worldICs4); 
     //IC World Setup
-    emp::World<emp::vector<bool>> worldIC(random);
-    worldIC.SetPopStruct_Mixed(false);
-    worldIC.SetPrintFun(print_fun_classic_ic);
-    worldIC.SetMutFun(mutate_fun_all);
-    std::function<double(std::vector<bool> &)> fit_fun_ic = fit_fun_match_classic_ic;
+    for(size_t ic = 0; ic < 4; ic++){
+        worldICs[ic]->SetPopStruct_Mixed(false);
+        worldICs[ic]->SetPrintFun(print_fun_stripe_ic);
+        worldICs[ic]->SetMutFun(mutate_fun_all);
+        worldICs[ic]->SetCache(true);
+    }
+    std::function<double(std::vector<bool> &)> fit_fun_ic_1 = fit_fun_match_stripe_ic;
+    std::function<double(std::vector<bool> &)> fit_fun_ic_2 = fit_fun_match_stripe_ic;
+    std::function<double(std::vector<bool> &)> fit_fun_ic_3 = fit_fun_match_stripe_ic;
+    std::function<double(std::vector<bool> &)> fit_fun_ic_4 = fit_fun_match_stripe_ic;
     
     if(fitFunStr.compare("STATIC_REP") == 0){
-        fit_fun_ic = fit_fun_static_rep_classic_ic;
+        fit_fun_ic_1 = fit_fun_static_rep_stripe_ic_1;
+        fit_fun_ic_2 = fit_fun_static_rep_stripe_ic_2;
+        fit_fun_ic_3 = fit_fun_static_rep_stripe_ic_3;
+        fit_fun_ic_4 = fit_fun_static_rep_stripe_ic_4;
         std::cout << "Using static and repeating structures for fitness." << std::endl;
     }
     else {   
-        fit_fun_ic = fit_fun_match_classic_ic;
         std::cout << "Using end state matching for fitness." << std::endl;
     }
-    worldIC.SetFitFun(fit_fun_ic);
-    worldIC.SetCache(true);
+    worldICs[0]->SetFitFun(fit_fun_ic_1);
+    worldICs[1]->SetFitFun(fit_fun_ic_2);
+    worldICs[2]->SetFitFun(fit_fun_ic_3);
+    worldICs[3]->SetFitFun(fit_fun_ic_4);
 
-    //Fill the world with random orgs
-    for(size_t i = 0; i < popSize; i++){
-        worldIC.Inject(GetRandomOrg_Classic_IC(random));
+    //Fill the worlds with random orgs
+    for(size_t ic = 0; ic < 4; ic++){
+        for(size_t i = 0; i < popSize; i++){
+            worldICs[ic]->Inject(GetRandomOrg_Quad_IC(random));
+        }
+        worldICs[ic]->Update();
+        SetICQuadPtr(worldICs[ic], ic);
     }
-    worldIC.Update();
-    SetICWorldPtr(&worldIC);
     
     //Ruleset World Setup
     emp::World<emp::vector<bool>> worldRuleset(random);
@@ -96,7 +113,7 @@ int main(int argc, char ** argv)
     std::function<double(std::vector<bool> &)> fit_fun_ruleset = fit_fun_match_classic_ruleset;
     
     if(fitFunStr.compare("STATIC_REP") == 0){
-        fit_fun_ruleset = fit_fun_static_rep_classic_ruleset;
+        fit_fun_ruleset = fit_fun_static_rep_stripe_ruleset;
     }
     else {   
         fit_fun_ruleset = fit_fun_match_classic_ruleset;
@@ -111,51 +128,55 @@ int main(int argc, char ** argv)
     worldRuleset.Update();
     SetRulesetWorldPtr(&worldRuleset);
 
-    //worldIC.SetupFitnessFile("./output/fitness_ic.csv", true);
-    //worldRuleset.SetupFitnessFile("./output/fitness_ruleset.csv", true);
-    //worldIC.SetupPopulationFile("./output/pop_ic.csv", true);
-    //worldRuleset.SetupPopulationFile("./output/pop_ruleset.csv", true);
+    //std::multimap<double, size_t> fit_map;
+    //double cur_fit = 0;
 
-    std::multimap<double, size_t> fit_map;
-    double cur_fit = 0;
-
-    fit_map.clear();
-    for (size_t id = 0; id < worldIC.GetSize(); id++) {
-        cur_fit = worldIC.GetCache(id);
-        fit_map.insert( std::make_pair(cur_fit, id) );
-    }
+    //fit_map.clear();
+    // for (size_t id = 0; id < worldIC.GetSize(); id++) {
+    //    cur_fit = worldIC.GetCache(id);
+    //    fit_map.insert( std::make_pair(cur_fit, id) );
+    //}
     std::fstream icFP;
     std::fstream rulesetFP;
     //Main Loop
     for(size_t i = 0; i < numGens; i++){
         worldRuleset.ClearCache();
-        worldIC.ClearCache();
         std::cout << "Generation #" << i << std::endl;
-        if(eliteCount > 0 && eliteCopies > 0)
-            EliteSelect(worldIC, eliteCount, eliteCopies);
-        TournamentSelect(worldIC, tourneySize, tourneyCount);
-        fit_map.clear();
-        for (size_t id = 0; id < worldIC.GetSize(); id++) {
-            cur_fit = worldIC.GetCache(id);
-            fit_map.insert( std::make_pair(cur_fit, id) );
+        for(size_t ic = 0; ic < 4; ic++){
+            worldICs[ic]->ClearCache();
+            if(eliteCount > 0 && eliteCopies > 0)
+                EliteSelect(*worldICs[ic], eliteCount, eliteCopies);
+            TournamentSelect(*worldICs[ic], tourneySize, tourneyCount);
         }
-        SetMaxFitIC(fit_map.rbegin()->second);
+        //fit_map.clear();
+        //for (size_t id = 0; id < worldIC.GetSize(); id++) {
+        //    cur_fit = worldIC.GetCache(id);
+        //    fit_map.insert( std::make_pair(cur_fit, id) );
+        //}
+        SetMaxFitIC(0);//fit_map.rbegin()->second);
         if(eliteCount > 0 && eliteCopies > 0)
             EliteSelect(worldRuleset, eliteCount, eliteCopies);
         TournamentSelect(worldRuleset, tourneySize, tourneyCount);
-        //Save off members of both populations to check convergence
+       
+        //Stripes 
+        for(size_t ic = 0; ic < 4; ic++){
+            //Save off members of both populations to check convergence
+            oss.str("");
+            oss << outputDir << "/STRIPES_IC_" << ic << "_Gen_" << i << idStr << ".txt";
+            icFP.open(oss.str(), std::ios::out | std::ios::trunc);
+            for (size_t id = 0; id < worldICs[ic]->GetSize(); id++) {
+                icFP << "IC ID: " << id << std::endl;
+                icFP << "Fitness: " << worldICs[ic]->GetCache(id) << std::endl;
+                icFP << std::endl;
+            }
+            icFP.close(); 
+            //Mutate & Update
+            worldICs[ic]->DoMutations();
+            worldICs[ic]->Update();
+        } 
+        //Ruleset
         oss.str("");
-        oss << outputDir << "/CLASSIC_IC_Gen_" << i << idStr << ".txt";
-        icFP.open(oss.str(), std::ios::out | std::ios::trunc);
-        for (size_t id = 0; id < worldIC.GetSize(); id++) {
-            icFP << "IC ID: " << id << std::endl;
-            icFP << "Fitness: " << worldIC.GetCache(id) << std::endl;
-            icFP << std::endl;
-        }
-        icFP.close(); 
-        
-        oss.str("");
-        oss << outputDir << "/CLASSIC_Ruleset_Gen_" << i << idStr<< ".txt";
+        oss << outputDir << "/STRIPES_Ruleset_Gen_" << i << idStr << ".txt";
         rulesetFP.open(oss.str(), std::ios::out | std::ios::trunc);
         for (size_t id = 0; id < worldRuleset.GetSize(); id++) {
             rulesetFP << "Ruleset ID: " << id << std::endl;
@@ -163,28 +184,27 @@ int main(int argc, char ** argv)
             rulesetFP << std::endl;
         }
         rulesetFP.close(); 
-        worldIC.DoMutations();
-        worldIC.Update();
         worldRuleset.DoMutations();
         worldRuleset.Update();
     }
 
     // Last generation image generation
     std::cout << "Last generation finished! Finishing up..." << std::endl; 
-   
-    oss.str(""); 
-    oss << outputDir << "/CLASSIC_IC_Last_Gen" << idStr << ".txt";
-    icFP.open(oss.str(), std::ios::out | std::ios::trunc);
-    for (size_t id = 0; id < worldIC.GetSize(); id++) {
-        icFP << "IC ID: " << id << std::endl;
-        icFP << "Fitness: " << worldIC.GetCache(id) << std::endl;
-        print_fun_classic_ic(worldIC.GetOrg(id), icFP);
-        icFP << std::endl;
+    
+    for(size_t ic = 0; ic < 4; ic++){ 
+        oss.str(""); 
+        oss << outputDir << "/STRIPES_IC_" << ic << "_Last_Gen" << idStr << ".txt";
+        icFP.open(oss.str(), std::ios::out | std::ios::trunc);
+        for (size_t id = 0; id < worldICs[ic]->GetSize(); id++) {
+            icFP << "IC ID: " << id << std::endl;
+            icFP << "Fitness: " << worldICs[ic]->GetCache(id) << std::endl;
+            print_fun_stripe_ic(worldICs[ic]->GetOrg(id), icFP);
+            icFP << std::endl;
+        }
+        icFP.close(); 
     }
-    icFP.close(); 
-        
     oss.str("");
-    oss << "./output/CLASSIC_Ruleset_Last_Gen"  << idStr << ".txt";
+    oss << "./output/STRIPES_Ruleset_Last_Gen" << idStr << ".txt";
     rulesetFP.open(oss.str(), std::ios::out | std::ios::trunc);
     for (size_t id = 0; id < worldRuleset.GetSize(); id++) {
         rulesetFP << "Ruleset ID: " << id << std::endl;
