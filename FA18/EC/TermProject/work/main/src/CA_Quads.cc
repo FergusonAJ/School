@@ -110,13 +110,10 @@ int main(int argc, char ** argv)
     worldRuleset.SetPopStruct_Mixed(false);
     worldRuleset.SetPrintFun(print_fun_classic_ruleset);
     worldRuleset.SetMutFun(mutate_fun_all);
-    std::function<double(std::vector<bool> &)> fit_fun_ruleset = fit_fun_match_classic_ruleset;
+    std::function<double(std::vector<bool> &)> fit_fun_ruleset = fit_fun_match_quad_ruleset;
     
     if(fitFunStr.compare("STATIC_REP") == 0){
         fit_fun_ruleset = fit_fun_static_rep_quad_ruleset;
-    }
-    else {   
-        fit_fun_ruleset = fit_fun_match_classic_ruleset;
     }
     worldRuleset.SetFitFun(fit_fun_ruleset);
     worldRuleset.SetCache(true);
