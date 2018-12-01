@@ -184,7 +184,7 @@ int main(int argc, char ** argv)
     icFP.close(); 
         
     oss.str("");
-    oss << "./output/CLASSIC_Ruleset_Last_Gen"  << idStr << ".txt";
+    oss << outputDir << "/CLASSIC_Ruleset_Last_Gen" << idStr << ".txt";
     rulesetFP.open(oss.str(), std::ios::out | std::ios::trunc);
     for (size_t id = 0; id < worldRuleset.GetSize(); id++) {
         rulesetFP << "Ruleset ID: " << id << std::endl;
