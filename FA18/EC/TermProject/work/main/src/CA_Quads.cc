@@ -76,10 +76,10 @@ int main(int argc, char ** argv)
         worldICs[ic]->SetMutFun(mutate_fun_all);
         worldICs[ic]->SetCache(true);
     }
-    std::function<double(std::vector<bool> &)> fit_fun_ic_1 = fit_fun_match_quad_ic;
-    std::function<double(std::vector<bool> &)> fit_fun_ic_2 = fit_fun_match_quad_ic;
-    std::function<double(std::vector<bool> &)> fit_fun_ic_3 = fit_fun_match_quad_ic;
-    std::function<double(std::vector<bool> &)> fit_fun_ic_4 = fit_fun_match_quad_ic;
+    std::function<double(std::vector<bool> &)> fit_fun_ic_1 = fit_fun_match_quad_ic_1;
+    std::function<double(std::vector<bool> &)> fit_fun_ic_2 = fit_fun_match_quad_ic_2;
+    std::function<double(std::vector<bool> &)> fit_fun_ic_3 = fit_fun_match_quad_ic_3;
+    std::function<double(std::vector<bool> &)> fit_fun_ic_4 = fit_fun_match_quad_ic_4;
     
     if(fitFunStr.compare("STATIC_REP") == 0){
         fit_fun_ic_1 = fit_fun_static_rep_quad_ic_1;
@@ -204,7 +204,7 @@ int main(int argc, char ** argv)
         icFP.close(); 
     }
     oss.str("");
-    oss << "./output/QUADS_Ruleset_Last_Gen" << idStr << ".txt";
+    oss << outputDir << "/QUADS_Ruleset_Last_Gen" << idStr << ".txt";
     rulesetFP.open(oss.str(), std::ios::out | std::ios::trunc);
     for (size_t id = 0; id < worldRuleset.GetSize(); id++) {
         rulesetFP << "Ruleset ID: " << id << std::endl;

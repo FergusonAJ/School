@@ -43,18 +43,5 @@ auto fit_fun_static_rep_control = [](std::vector<bool> & org){
     std::vector<unsigned char> tmp = BitstringToVec(org, 18);
     ca.AddSubsurface(tmp, subX, subY, subWidth);
     double score = GetStaticRepFitness(); 
-    /*
-    if(score > max){
-        max = score;
-        print_fun_control(org, std::cout);
-        ca.GroupStart();
-        ca.PrintGroupFlat(std::cout);
-        for(size_t val : validStructures){
-            std::cout << val << " ";
-        }
-        std::cout << std::endl;
-        std::cout << score << std::endl;
-    }
-    */
     return score;
 };

@@ -64,15 +64,26 @@ std::function<void(std::vector<bool> &, std::ostream &)> print_fun_classic_rules
 //Fitness functions
 auto fit_fun_match_classic_ic = [](std::vector<bool> & org){
     ca.Reset();
-    std::vector<unsigned char> tmp = BitstringToVec(org, 18);
-    ca.AddSubsurface(tmp, subX, subY, subWidth);
-    return GetMatchFitness();
+    std::vector<unsigned char> tmp = BitstringToVec(org);
+    double max = 0;
+    double score = 0;
+    size_t idx = 0;
+    for(int i = 0; i < numCollaborators; i++){
+        ca.Reset();
+        ca.AddSubsurface(tmp, subX, subY, subWidth);
+        idx = randPtr->GetUInt(0, rulesetWorldPtr->GetSize());    
+        ca.SetUpdateFunc(GetUpdateFunc(rulesetWorldPtr->GetOrg(idx)));
+        score = GetMatchFitness();
+        if(score > max)
+            max = score;
+    }
+    return max;
 };
 
 auto fit_fun_static_rep_classic_ic = [](std::vector<bool> & org){
     ca.Reset();
     std::vector<unsigned char> tmp = BitstringToVec(org);
-    double max = GetStaticRepFitness();
+    double max = 0;
     double score = 0;
     size_t idx = 0;
     for(int i = 0; i < numCollaborators; i++){
@@ -90,9 +101,20 @@ auto fit_fun_static_rep_classic_ic = [](std::vector<bool> & org){
 auto fit_fun_match_classic_ruleset = [](std::vector<bool> & org){
     ca.Reset();
     ca.SetUpdateFunc(GetUpdateFunc(org));
-    std::vector<unsigned char> tmp = BitstringToVec(org, 18);
-    ca.AddSubsurface(tmp, subX, subY, subWidth);
-    return GetMatchFitness();
+    std::vector<unsigned char> tmp;
+    double max = 0;
+    double score = 0;
+    size_t idx = 0;
+    for(int i = 0; i < numCollaborators; i++){  
+        ca.Reset(); 
+        idx = randPtr->GetUInt(0, icWorldPtr->GetSize());   
+        std::vector<unsigned char> tmp = BitstringToVec(icWorldPtr->GetOrg(idx));
+        ca.AddSubsurface(tmp, subX, subY, subWidth);
+        score = GetMatchFitness();
+        if(score > max)
+            max = score;
+    }
+    return max;
 };
 
 auto fit_fun_static_rep_classic_ruleset = [](std::vector<bool> & org){
