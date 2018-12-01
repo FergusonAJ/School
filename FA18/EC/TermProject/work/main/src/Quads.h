@@ -111,7 +111,6 @@ auto fit_fun_static_rep_quad_ic_4 = [](std::vector<bool> & org){
 auto fit_fun_static_rep_quad_ruleset = [](std::vector<bool> & org){
     ca.Reset();
     ca.SetUpdateFunc(GetUpdateFunc(org));
-    //Check against most fit individual
     double max = 0;
     double score = 0;
     size_t idx = 0;

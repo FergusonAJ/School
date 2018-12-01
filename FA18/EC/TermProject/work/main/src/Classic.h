@@ -98,13 +98,11 @@ auto fit_fun_match_classic_ruleset = [](std::vector<bool> & org){
 auto fit_fun_static_rep_classic_ruleset = [](std::vector<bool> & org){
     ca.Reset();
     ca.SetUpdateFunc(GetUpdateFunc(org));
-    //Check against most fit individual
-    std::vector<unsigned char> tmp = BitstringToVec(icWorldPtr->GetOrg(maxFitIC));
-    ca.AddSubsurface(tmp, subX, subY, subWidth);
-    double max = GetStaticRepFitness();
+    std::vector<unsigned char> tmp;
+    double max = 0;
     double score = 0;
     size_t idx = 0;
-    for(int i = 0; i < numCollaborators - 1; i++){  
+    for(int i = 0; i < numCollaborators; i++){  
         ca.Reset(); 
         idx = randPtr->GetUInt(0, icWorldPtr->GetSize());   
         std::vector<unsigned char> tmp = BitstringToVec(icWorldPtr->GetOrg(idx));
