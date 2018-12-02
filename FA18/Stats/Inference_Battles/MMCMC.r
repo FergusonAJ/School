@@ -34,8 +34,19 @@ cur_dist <- dist_binom
 cur_det <- det_linear
 cur_link <- link_inv_logit
 
+
+
+cur_dist_r = cur_dist$r_dist
+cur_dist_d = cur_dist$d_dist
+
+
 #Get the data
 data <- read.csv('Polynom_nom_nomials_dataset.csv')
+
+
+####     NOTE:    ####
+#Much of this is Gideon Bradburn's work that I stole from class
+
 
 #Distribution (Log) Likelihoodsd
 log_likelihood <- function(dist, func, link, data, a, b, c){
@@ -62,8 +73,6 @@ log_posterior_prob <- function(dist, func, link, data, a, b, c){
   return(val)
 }
 
-#Much of this is Gideon Bradburn's work that I stole from class
-
 #	-sampled parameter estimates
 samples_a <- rep(NA,1 + num_iters/sample_freq)
 samples_b <- rep(NA,1 + num_iters/sample_freq)
@@ -74,7 +83,7 @@ a <- rnorm(1,mean=0,sd=1)
 b <- rnorm(1,mean=0,sd=1)
 c <- rexp(1,rate=1)
 #	-calculate posterior probability
-post_prob <- log_posterior_prob(cur_dist, cur_det, cur_link, data, a, b, c)
+post_prob <- log_posterior_prob(cur_dist_d, cur_det, cur_link, data, a, b, c)
 #Log initial values
 samples_a[1] <- a
 samples_b[1] <- b
@@ -89,7 +98,7 @@ for(i in 2:num_iters){
   c_prime <- c + rnorm(1,0,0.1)
   
   #		-calculate the posterior probability of the data given the proposed value
-  post_prob_prime <- log_posterior_prob(cur_dist, cur_det, cur_link, data, a_prime, b_prime, c_prime)
+  post_prob_prime <- log_posterior_prob(cur_dist_d, cur_det, cur_link, data, a_prime, b_prime, c_prime)
   #		-calculate R, the ratio of the proposed and current posterior probabilities
   R <- exp(post_prob_prime - post_prob)
   
@@ -146,9 +155,7 @@ data2 <- data.frame(matrix(nrow=1000, ncol=2))
 for(i in 1:1000){
   rand <- rnorm(1, 6.3, 1) #This is my guess as to what their values were for generating predictor values
   data2[i,1] = rand #Store as predictor
-  data2[i,2] = rbinom(1, p =cur_link(cur_det(rand,a,b)), size=500) #Generate response for that predictor
-  #data2[i,2] = rpois(1, lambda=cur_link(cur_det(rand,a,b))) #Generate response for that predictor
-  #data[i,2] = rnorm(1, mean=det_linear(rand,31,67), sd = 7) #Generate response for that predictor
+  data2[i,2] = cur_dist_r(1, cur_link(cur_det(rand,a,b)), c) #Generate response for that predictor
 }
 
 png(filename = paste(sep='', id, '_estimation.png'), width = 800, height = 800, units = 'px')
