@@ -10,14 +10,18 @@ std::vector<bool> GetRandomOrg_Control(emp::Random& rand){
 
 std::function<void(std::vector<bool> &, std::ostream &)> print_fun_control = [](std::vector<bool> & org, std::ostream & os) {
     os << "B";
+    unsigned int a = 1;
     for(int i = 0; i < 9; i++){
-        if(org[i])
+        if(org[i] && (bBlackMask & a) == 0)
             os << i;
+        a *= 2;
     }
     os << "/S";
+    a = 1;
     for(int i = 0; i < 9; i++){
-        if(org[i+9])
+        if(org[i+9] && (sBlackMask & a) == 0)
             os << i;
+        a *= 2;
     }
     os << "\n";
     for(int y = 0; y < subHeight; y++){
@@ -31,7 +35,7 @@ std::function<void(std::vector<bool> &, std::ostream &)> print_fun_control = [](
 
 auto fit_fun_match_control = [](std::vector<bool> & org){
     ca.Reset();
-    ca.SetUpdateFunc(GetUpdateFunc(org));
+    ca.SetUpdateFunc(GetUpdateFunc(org, bBlackMask, sBlackMask));
     std::vector<unsigned char> tmp = BitstringToVec(org, 18);
     ca.AddSubsurface(tmp, subX, subY, subWidth);
     return GetMatchFitness();
@@ -39,7 +43,7 @@ auto fit_fun_match_control = [](std::vector<bool> & org){
 
 auto fit_fun_static_rep_control = [](std::vector<bool> & org){
     ca.Reset();
-    ca.SetUpdateFunc(GetUpdateFunc(org));
+    ca.SetUpdateFunc(GetUpdateFunc(org, bBlackMask, sBlackMask));
     std::vector<unsigned char> tmp = BitstringToVec(org, 18);
     ca.AddSubsurface(tmp, subX, subY, subWidth);
     double score = GetStaticRepFitness(); 

@@ -48,14 +48,18 @@ std::function<void(std::vector<bool> &, std::ostream &)> print_fun_classic_ic = 
 
 std::function<void(std::vector<bool> &, std::ostream &)> print_fun_classic_ruleset = [](std::vector<bool> & org, std::ostream & os) {
     os << "B";
+    unsigned int a = 1;
     for(int i = 0; i < 9; i++){
-        if(org[i])
+        if(org[i] && (bBlackMask & a) == 0)
             os << i;
+        a *= 2;
     }
     os << "/S";
+    a = 1;
     for(int i = 0; i < 9; i++){
-        if(org[i+9])
+        if(org[i+9] && (sBlackMask & a) == 0)
             os << i;
+        a *= 2;
     }
     os << std::endl;
 };
@@ -72,7 +76,7 @@ auto fit_fun_match_classic_ic = [](std::vector<bool> & org){
         ca.Reset();
         ca.AddSubsurface(tmp, subX, subY, subWidth);
         idx = randPtr->GetUInt(0, rulesetWorldPtr->GetSize());    
-        ca.SetUpdateFunc(GetUpdateFunc(rulesetWorldPtr->GetOrg(idx)));
+        ca.SetUpdateFunc(GetUpdateFunc(rulesetWorldPtr->GetOrg(idx), bBlackMask, sBlackMask));
         score = GetMatchFitness();
         if(score > max)
             max = score;
@@ -90,7 +94,7 @@ auto fit_fun_static_rep_classic_ic = [](std::vector<bool> & org){
         ca.Reset();
         ca.AddSubsurface(tmp, subX, subY, subWidth);
         idx = randPtr->GetUInt(0, rulesetWorldPtr->GetSize());    
-        ca.SetUpdateFunc(GetUpdateFunc(rulesetWorldPtr->GetOrg(idx)));
+        ca.SetUpdateFunc(GetUpdateFunc(rulesetWorldPtr->GetOrg(idx), bBlackMask, sBlackMask));
         score = GetStaticRepFitness();
         if(score > max)
             max = score;
@@ -100,7 +104,7 @@ auto fit_fun_static_rep_classic_ic = [](std::vector<bool> & org){
 
 auto fit_fun_match_classic_ruleset = [](std::vector<bool> & org){
     ca.Reset();
-    ca.SetUpdateFunc(GetUpdateFunc(org));
+    ca.SetUpdateFunc(GetUpdateFunc(org, bBlackMask, sBlackMask));
     std::vector<unsigned char> tmp;
     double max = 0;
     double score = 0;
@@ -119,7 +123,7 @@ auto fit_fun_match_classic_ruleset = [](std::vector<bool> & org){
 
 auto fit_fun_static_rep_classic_ruleset = [](std::vector<bool> & org){
     ca.Reset();
-    ca.SetUpdateFunc(GetUpdateFunc(org));
+    ca.SetUpdateFunc(GetUpdateFunc(org, bBlackMask, sBlackMask));
     std::vector<unsigned char> tmp;
     double max = 0;
     double score = 0;

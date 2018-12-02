@@ -45,6 +45,8 @@ void ConfigInit(ConfigLoader& config){
     config.Register("CHECK_STEPS", loader_int, delete_int);
     config.Register("CAN_MOVE", loader_bool, delete_bool);
     config.Register("MUST_MOVE", loader_bool, delete_bool);
+    config.Register("B_BLACK_MASK", loader_int, delete_int);
+    config.Register("S_BLACK_MASK", loader_int, delete_int);
 
     config.Register("VIZ_ONLY", loader_bool, delete_bool);
     

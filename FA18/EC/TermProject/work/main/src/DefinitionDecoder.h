@@ -75,21 +75,26 @@ void LoadBSVectors(const std::string& s,
 
 //Load B and S vectors from a bitstring
 void LoadBSVectors(const std::vector<bool>& v, 
-        std::vector<unsigned char> &B, std::vector<unsigned char> &S){
+std::vector<unsigned char> &B, std::vector<unsigned char> &S, 
+     unsigned int bBlackMask, unsigned int sBlackMask){
+    unsigned int a = 1;
     for(int i = 0; i < 9; i++){
-        if(v[i])
+        if(v[i] && (bBlackMask & a) == 0)
             B.push_back(i);
+        a *= 2;
     }
+    a = 1;
     for(int i = 0; i < 9; i++){
-        if(v[i+9])
+        if(v[i+9] && (sBlackMask & a) == 0)
             S.push_back(i);
+        a *= 2;
     }
 }
 
 //Generate the update function for a CA given a bitstring
 std::function<unsigned char(unsigned char &, const emp::vector<emp::Ptr<unsigned char>> &)>
-    GetUpdateFunc(const std::vector<bool>& v){
+GetUpdateFunc(const std::vector<bool>& v, unsigned int bBlackMask = 0, unsigned int sBlackMask = 0){
     std::vector<unsigned char> B, S;
-    LoadBSVectors(v, B, S);
+    LoadBSVectors(v, B, S, bBlackMask, sBlackMask);
     return GetUpdateFunc(B, S); 
 }

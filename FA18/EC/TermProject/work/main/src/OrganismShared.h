@@ -20,6 +20,7 @@ int width, height, subWidth, subHeight, subX, subY, numSteps, checkSteps, numCol
 bool canMove, mustMove;
 std::string name;
 float mutRateFactor;
+unsigned int bBlackMask, sBlackMask;
 std::vector<unsigned char> endState;
 int max = 0;
 emp::Random* randPtr;
@@ -38,6 +39,8 @@ void Initialize(emp::Random* ptr){
     numCollaborators = GetConfig().Fetch<int>("NUM_COLLABORATORS");
     canMove = GetConfig().Fetch<bool>("CAN_MOVE");
     mustMove = GetConfig().Fetch<bool>("MUST_MOVE");
+    bBlackMask = (unsigned int)(GetConfig().Fetch<int>("B_BLACK_MASK"));
+    sBlackMask = (unsigned int)(GetConfig().Fetch<int>("S_BLACK_MASK"));
     LoadFile(endState, GetConfig().Fetch<std::string>("END_STATE"), width, height);
     ca.Resize(width, height);
     ca.SetFunctions(conwayStruct);

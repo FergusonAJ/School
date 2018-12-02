@@ -44,7 +44,7 @@ auto fit_fun_match_quad_ic_1 = [](std::vector<bool> & org){
         ca.AddSubsurface(tmp, 0, 0, subWidth/2);
         //Ruleset
         idx = randPtr->GetUInt(0, rulesetWorldPtr->GetSize());    
-        ca.SetUpdateFunc(GetUpdateFunc(rulesetWorldPtr->GetOrg(idx)));
+        ca.SetUpdateFunc(GetUpdateFunc(rulesetWorldPtr->GetOrg(idx), bBlackMask, sBlackMask));
         //2 
         idx = randPtr->GetUInt(0, icWorldPtrs[1]->GetSize());   
         tmp = BitstringToVec(icWorldPtrs[1]->GetOrg(idx));
@@ -76,7 +76,7 @@ auto fit_fun_match_quad_ic_2 = [](std::vector<bool> & org){
         ca.AddSubsurface(tmp, subWidth / 2, 0, subWidth/2);
         //Ruleset
         idx = randPtr->GetUInt(0, rulesetWorldPtr->GetSize());    
-        ca.SetUpdateFunc(GetUpdateFunc(rulesetWorldPtr->GetOrg(idx)));
+        ca.SetUpdateFunc(GetUpdateFunc(rulesetWorldPtr->GetOrg(idx), bBlackMask, sBlackMask));
         //1 
         idx = randPtr->GetUInt(0, icWorldPtrs[0]->GetSize());   
         tmp = BitstringToVec(icWorldPtrs[0]->GetOrg(idx));
@@ -108,7 +108,7 @@ auto fit_fun_match_quad_ic_3 = [](std::vector<bool> & org){
         ca.AddSubsurface(tmp, 0, subHeight / 2, subWidth/2);
         //Ruleset
         idx = randPtr->GetUInt(0, rulesetWorldPtr->GetSize());    
-        ca.SetUpdateFunc(GetUpdateFunc(rulesetWorldPtr->GetOrg(idx)));
+        ca.SetUpdateFunc(GetUpdateFunc(rulesetWorldPtr->GetOrg(idx), bBlackMask, sBlackMask));
         //1 
         idx = randPtr->GetUInt(0, icWorldPtrs[0]->GetSize());   
         tmp = BitstringToVec(icWorldPtrs[0]->GetOrg(idx));
@@ -140,7 +140,7 @@ auto fit_fun_match_quad_ic_4 = [](std::vector<bool> & org){
         ca.AddSubsurface(tmp, subWidth / 2, subHeight / 2, subWidth/2);
         //Ruleset
         idx = randPtr->GetUInt(0, rulesetWorldPtr->GetSize());    
-        ca.SetUpdateFunc(GetUpdateFunc(rulesetWorldPtr->GetOrg(idx)));
+        ca.SetUpdateFunc(GetUpdateFunc(rulesetWorldPtr->GetOrg(idx), bBlackMask, sBlackMask));
         //1 
         idx = randPtr->GetUInt(0, icWorldPtrs[0]->GetSize());   
         tmp = BitstringToVec(icWorldPtrs[0]->GetOrg(idx));
@@ -174,7 +174,7 @@ auto fit_fun_static_rep_quad_ic_1 = [](std::vector<bool> & org){
         ca.AddSubsurface(tmp, 0, 0, subWidth/2);
         //Ruleset
         idx = randPtr->GetUInt(0, rulesetWorldPtr->GetSize());    
-        ca.SetUpdateFunc(GetUpdateFunc(rulesetWorldPtr->GetOrg(idx)));
+        ca.SetUpdateFunc(GetUpdateFunc(rulesetWorldPtr->GetOrg(idx), bBlackMask, sBlackMask));
         //2 
         idx = randPtr->GetUInt(0, icWorldPtrs[1]->GetSize());   
         tmp = BitstringToVec(icWorldPtrs[1]->GetOrg(idx));
@@ -206,7 +206,7 @@ auto fit_fun_static_rep_quad_ic_2 = [](std::vector<bool> & org){
         ca.AddSubsurface(tmp, subWidth / 2, 0, subWidth/2);
         //Ruleset
         idx = randPtr->GetUInt(0, rulesetWorldPtr->GetSize());    
-        ca.SetUpdateFunc(GetUpdateFunc(rulesetWorldPtr->GetOrg(idx)));
+        ca.SetUpdateFunc(GetUpdateFunc(rulesetWorldPtr->GetOrg(idx), bBlackMask, sBlackMask));
         //1 
         idx = randPtr->GetUInt(0, icWorldPtrs[0]->GetSize());   
         tmp = BitstringToVec(icWorldPtrs[0]->GetOrg(idx));
@@ -238,7 +238,7 @@ auto fit_fun_static_rep_quad_ic_3 = [](std::vector<bool> & org){
         ca.AddSubsurface(tmp, 0, subHeight / 2, subWidth/2);
         //Ruleset
         idx = randPtr->GetUInt(0, rulesetWorldPtr->GetSize());    
-        ca.SetUpdateFunc(GetUpdateFunc(rulesetWorldPtr->GetOrg(idx)));
+        ca.SetUpdateFunc(GetUpdateFunc(rulesetWorldPtr->GetOrg(idx), bBlackMask, sBlackMask));
         //1 
         idx = randPtr->GetUInt(0, icWorldPtrs[0]->GetSize());   
         tmp = BitstringToVec(icWorldPtrs[0]->GetOrg(idx));
@@ -270,7 +270,7 @@ auto fit_fun_static_rep_quad_ic_4 = [](std::vector<bool> & org){
         ca.AddSubsurface(tmp, subWidth / 2, subHeight / 2, subWidth/2);
         //Ruleset
         idx = randPtr->GetUInt(0, rulesetWorldPtr->GetSize());    
-        ca.SetUpdateFunc(GetUpdateFunc(rulesetWorldPtr->GetOrg(idx)));
+        ca.SetUpdateFunc(GetUpdateFunc(rulesetWorldPtr->GetOrg(idx), bBlackMask, sBlackMask));
         //1 
         idx = randPtr->GetUInt(0, icWorldPtrs[0]->GetSize());   
         tmp = BitstringToVec(icWorldPtrs[0]->GetOrg(idx));
@@ -294,7 +294,7 @@ auto fit_fun_static_rep_quad_ic_4 = [](std::vector<bool> & org){
 //Ruleset Fitness Functions
 auto fit_fun_match_quad_ruleset = [](std::vector<bool> & org){
     ca.Reset();
-    ca.SetUpdateFunc(GetUpdateFunc(org));
+    ca.SetUpdateFunc(GetUpdateFunc(org, bBlackMask, sBlackMask));
     double max = 0;
     double score = 0;
     size_t idx = 0;
@@ -326,7 +326,7 @@ auto fit_fun_match_quad_ruleset = [](std::vector<bool> & org){
 };
 auto fit_fun_static_rep_quad_ruleset = [](std::vector<bool> & org){
     ca.Reset();
-    ca.SetUpdateFunc(GetUpdateFunc(org));
+    ca.SetUpdateFunc(GetUpdateFunc(org, bBlackMask, sBlackMask));
     double max = 0;
     double score = 0;
     size_t idx = 0;
