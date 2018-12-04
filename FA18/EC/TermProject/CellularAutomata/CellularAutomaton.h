@@ -610,7 +610,11 @@ namespace empCA{
 
         //Note: This assumes w and h are smaller than the actual width and height
         bool RelativeComparisonPerfect(std::vector<CELL>& vec, size_t w, size_t h, bool clear=true){
-            return (double)RelativeComparison(vec, w, h, clear) == w * h;
+            if(clear)
+                ClearRightAndBottom();
+            Rect selfBounds = GetBounds(false);
+            return ((double)RelativeComparison(vec, w, h, clear) == w * h) && 
+                (selfBounds.w == w && selfBounds.h == h);
         }
 
     
