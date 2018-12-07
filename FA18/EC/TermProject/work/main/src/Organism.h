@@ -1,3 +1,10 @@
+
+//  DEPRECATED
+//  This file has been superceded by individual header files for the different treatments
+//  See ./OrganismShared.h for code shared amongst the different treatments
+//  For ./Control.h ./Classic.h ./Quads.h ./Stripes.h for code unique to each treatment
+
+
 #include <functional>
 
 #include "tools/string_utils.h"

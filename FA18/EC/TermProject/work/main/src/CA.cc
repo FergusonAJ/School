@@ -1,3 +1,11 @@
+
+
+//  DEPRECATED
+//  This file has been superceded by individual main programs 
+//  See ./CA_Control.cc ./CA_Classic.cc ./CA_Quads.cc ./CA_Stripes
+//  Only keeping it around termporarily
+
+
 //  Evolutionary Computing Term Project
 //  Investigating Cooperative Co-Evolution Modularity Using Cellular Automata
 //  Austin J. Ferguson

@@ -4,6 +4,9 @@
 #include "./Quads.h"
 
 
+//Note: Stripes treatment does reuse code quads and classic
+
+
 //Print functions
 std::function<void(std::vector<bool> &, std::ostream &)> print_fun_stripe_ic = [](std::vector<bool> & org, std::ostream & os) {
     for(int y = 0; y < subHeight / 4; y++){

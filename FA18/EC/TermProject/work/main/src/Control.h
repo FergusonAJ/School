@@ -1,5 +1,6 @@
 #include "OrganismShared.h"
 
+//Generate a new bit string
 std::vector<bool> GetRandomOrg_Control(emp::Random& rand){
     std::vector<bool> vec(width * height + 18);
     for(size_t i = 0; i < vec.size(); i++){
@@ -8,6 +9,7 @@ std::vector<bool> GetRandomOrg_Control(emp::Random& rand){
     return vec;
 }
 
+//Print function, dump ruleset and initial configuration
 std::function<void(std::vector<bool> &, std::ostream &)> print_fun_control = [](std::vector<bool> & org, std::ostream & os) {
     os << "B";
     unsigned int a = 1;
@@ -33,6 +35,7 @@ std::function<void(std::vector<bool> &, std::ostream &)> print_fun_control = [](
     os << std::endl;
 };
 
+//Fitness function - matching
 auto fit_fun_match_control = [](std::vector<bool> & org){
     ca.Reset();
     ca.SetUpdateFunc(GetUpdateFunc(org, bBlackMask, sBlackMask));
@@ -41,6 +44,7 @@ auto fit_fun_match_control = [](std::vector<bool> & org){
     return GetMatchFitness();
 };
 
+//Fitness function - Static/Repeating & Gliders
 auto fit_fun_static_rep_control = [](std::vector<bool> & org){
     ca.Reset();
     ca.SetUpdateFunc(GetUpdateFunc(org, bBlackMask, sBlackMask));

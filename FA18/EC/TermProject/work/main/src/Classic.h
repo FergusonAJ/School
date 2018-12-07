@@ -18,7 +18,7 @@ void SetMaxFitIC(size_t idx){
     maxFitIC = idx;
 }
 
-//Get random organism functions
+//Generate a new IC
 std::vector<bool> GetRandomOrg_Classic_IC(emp::Random& rand){
     std::vector<bool> vec(width * height);
     for(size_t i = 0; i < vec.size(); i++){
@@ -27,6 +27,7 @@ std::vector<bool> GetRandomOrg_Classic_IC(emp::Random& rand){
     return vec;
 }
 
+//Generate a new ruleset
 std::vector<bool> GetRandomOrg_Classic_Ruleset(emp::Random& rand){
     std::vector<bool> vec(18);
     for(size_t i = 0; i < vec.size(); i++){
@@ -35,7 +36,7 @@ std::vector<bool> GetRandomOrg_Classic_Ruleset(emp::Random& rand){
     return vec;
 }
 
-//Print functions
+//Print function - IC
 std::function<void(std::vector<bool> &, std::ostream &)> print_fun_classic_ic = [](std::vector<bool> & org, std::ostream & os) {
     for(int y = 0; y < subHeight; y++){
         for(int x = 0; x < subWidth; x++){
@@ -46,6 +47,7 @@ std::function<void(std::vector<bool> &, std::ostream &)> print_fun_classic_ic = 
     os << std::endl;
 };
 
+//Print function - Ruleset
 std::function<void(std::vector<bool> &, std::ostream &)> print_fun_classic_ruleset = [](std::vector<bool> & org, std::ostream & os) {
     os << "B";
     unsigned int a = 1;
@@ -65,7 +67,7 @@ std::function<void(std::vector<bool> &, std::ostream &)> print_fun_classic_rules
 };
 
 
-//Fitness functions
+//Fitness function - IC - Matching
 auto fit_fun_match_classic_ic = [](std::vector<bool> & org){
     ca.Reset();
     std::vector<unsigned char> tmp = BitstringToVec(org);
@@ -84,6 +86,7 @@ auto fit_fun_match_classic_ic = [](std::vector<bool> & org){
     return max;
 };
 
+//Fitness function - IC - Static/Repeating or Gliders
 auto fit_fun_static_rep_classic_ic = [](std::vector<bool> & org){
     ca.Reset();
     std::vector<unsigned char> tmp = BitstringToVec(org);
@@ -102,6 +105,7 @@ auto fit_fun_static_rep_classic_ic = [](std::vector<bool> & org){
     return max;
 };
 
+//Fitness function - Ruleset - Matching
 auto fit_fun_match_classic_ruleset = [](std::vector<bool> & org){
     ca.Reset();
     ca.SetUpdateFunc(GetUpdateFunc(org, bBlackMask, sBlackMask));
@@ -121,6 +125,7 @@ auto fit_fun_match_classic_ruleset = [](std::vector<bool> & org){
     return max;
 };
 
+//Fitness function - Ruleset - Static/Repeating or Gliders
 auto fit_fun_static_rep_classic_ruleset = [](std::vector<bool> & org){
     ca.Reset();
     ca.SetUpdateFunc(GetUpdateFunc(org, bBlackMask, sBlackMask));

@@ -3,6 +3,7 @@
 //  Austin J. Ferguson
 //  11/9/2018
 
+//  Main program for control runs 
 
 //  This file uses parts of Empirical, https://github.com/devosoft/Empirical
 //  Copyright (C) Michigan State University, 2016-2017.

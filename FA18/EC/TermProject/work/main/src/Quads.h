@@ -3,6 +3,10 @@
 #include "Evolve/World.h"
 #include "./Classic.h"
 
+
+//Note: Quads treatment uses some code from the classic treatment
+
+
 //Variables
 emp::World<emp::vector<bool>>* icWorldPtrs[4];
 

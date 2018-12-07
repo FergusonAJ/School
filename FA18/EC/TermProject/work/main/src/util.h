@@ -7,6 +7,8 @@
 #include <ctime>
 #include <locale>
 
+
+//A sad function because the CA is still using unsigned char while the individuals use bools
 std::vector<unsigned char> BitstringToVec(std::vector<bool> bs, size_t offset = 0){
     std::vector<unsigned char> vec;
     vec.resize(bs.size() - offset);
@@ -16,6 +18,7 @@ std::vector<unsigned char> BitstringToVec(std::vector<bool> bs, size_t offset = 
     return vec;
 }
 
+//Grabs a timestamp to create unique filenames
 std::string GetTimestamp(){
     std::time_t t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     char buff[100];

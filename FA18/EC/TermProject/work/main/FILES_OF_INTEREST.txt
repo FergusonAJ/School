@@ -1,0 +1,33 @@
+This entire repository is a mess composed of messy code. 
+(Rushing the code does that)
+
+Here is a list of the main files, ./ refers to the main/work/ directory where this file is saved.
+
+
+Main files for each treatment:
+./src/CA_Control.cc
+./src/CA_Classic.cc
+./src/CA_Quads.cc
+./src/CA_Stripes.cc
+
+
+Configuration file with many outdated options:
+./config.txt
+
+
+Header files that define organisms and their functions for each treatment:
+./src/OrganismShared.hh
+./src/Control.h
+./src/Classic.h
+./src/Quads.h
+./src/Stripes.h
+
+
+The main guts of everything to do with cellular automata. 
+This code actually started out decent, but as time went on the quality quickly plummeted. 
+It is also very scarcely commented. This is because I actually plan on returning to really clean up this code (See giant chunks currently commented out). I can go through and comment it all if you would like. 
+../../CellularAutomata/CellularAutomaton.h
+
+./viz/ holds the visualization scripts used, but a fair warning they are not commented at all.
+
+

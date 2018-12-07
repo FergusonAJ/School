@@ -3,6 +3,9 @@
 #include <string>
 #include <fstream>
 
+
+//Quick and dirty loader for end state .txt files
+
 void LoadFile(std::vector<unsigned char>& vec, std::string filename, size_t w, size_t h){
     std::ifstream fp;
     fp.open(filename, std::ios::in);

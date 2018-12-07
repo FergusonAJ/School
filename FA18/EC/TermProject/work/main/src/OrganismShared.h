@@ -1,3 +1,6 @@
+//  OrganismShared.h
+//  For code shared across all treatments
+
 #pragma once
 
 #include <functional>
@@ -14,6 +17,7 @@
 #include "./util.h"
 
 
+//Variables
 empCA::CellularAutomaton<unsigned char> ca;
 std::function<unsigned char(emp::Random &)> spawnFunc;
 int width, height, subWidth, subHeight, subX, subY, numSteps, checkSteps, numCollaborators;
@@ -25,6 +29,7 @@ std::vector<unsigned char> endState;
 int max = 0;
 emp::Random* randPtr;
 
+//Set up cellulat automaton and load in configuration variables
 void Initialize(emp::Random* ptr){
     width = GetConfig().Fetch<int>("WIDTH");
     height = GetConfig().Fetch<int>("HEIGHT");
@@ -48,6 +53,8 @@ void Initialize(emp::Random* ptr){
     randPtr = ptr;
 }
 
+
+//Once ca has been set with the right properties, calculate fitness using end state matching
 double GetMatchFitness(){
     for(int i = 0; i < numSteps; i++){
         ca.Update();
@@ -66,6 +73,7 @@ double GetMatchFitness(){
     return score / (width * height);
 }
 
+//Once ca has been set with the right properties, calculate fitness for static/repeating and glider functions
 double GetStaticRepFitness(){
     for(int i = 0; i < numSteps; i++){
         ca.Update();
@@ -75,6 +83,8 @@ double GetStaticRepFitness(){
     return (double)validStructures.size(); 
 }
 
+//Universal mutation function
+//Potentially swap each bit with probability 1/length of org * mutRateFactor (A configuration var)
 std::function<size_t(std::vector<bool> &, emp::Random &)> mutate_fun_all = [](std::vector<bool> & org, emp::Random & rand) {
     size_t count = 0;
     float mutRate = 1.0f / org.size() * mutRateFactor;
