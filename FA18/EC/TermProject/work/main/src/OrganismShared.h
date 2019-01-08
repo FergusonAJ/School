@@ -4,6 +4,7 @@
 #pragma once
 
 #include <functional>
+#include <map>
 
 #include "tools/string_utils.h"
 #include "base/vector.h"

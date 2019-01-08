@@ -5,6 +5,8 @@
 //Variables
 emp::World<emp::vector<bool>>* icWorldPtr;
 emp::World<emp::vector<bool>>* rulesetWorldPtr;
+std::multimap<double, size_t>* icFitnessMapPtr;
+std::multimap<double, size_t>* rulesetFitnessMapPtr;
 size_t maxFitIC = 0;
 
 //Utility functions
@@ -13,6 +15,12 @@ void SetICWorldPtr(emp::World<emp::vector<bool>>* ptr){
 }
 void SetRulesetWorldPtr(emp::World<emp::vector<bool>>* ptr){
     rulesetWorldPtr = ptr;
+}
+void SetICFitnessMapPtr(std::multimap<double, size_t>* ptr){
+    icFitnessMapPtr = ptr;
+}
+void SetRulesetFitnessMapPtr(std::multimap<double, size_t>* ptr){
+    rulesetFitnessMapPtr = ptr;
 }
 void SetMaxFitIC(size_t idx){
     maxFitIC = idx;
@@ -74,10 +82,17 @@ auto fit_fun_match_classic_ic = [](std::vector<bool> & org){
     double max = 0;
     double score = 0;
     size_t idx = 0;
+    auto iter = rulesetFitnessMapPtr->rbegin();
     for(int i = 0; i < numCollaborators; i++){
         ca.Reset();
         ca.AddSubsurface(tmp, subX, subY, subWidth);
-        idx = randPtr->GetUInt(0, rulesetWorldPtr->GetSize());    
+        if(rulesetFitnessMapPtr->size() > i){
+            idx = iter->second;
+            iter++;
+        }
+        else{
+            idx = randPtr->GetUInt(0, rulesetWorldPtr->GetSize());    
+        }
         ca.SetUpdateFunc(GetUpdateFunc(rulesetWorldPtr->GetOrg(idx), bBlackMask, sBlackMask));
         score = GetMatchFitness();
         if(score > max)
@@ -93,10 +108,17 @@ auto fit_fun_static_rep_classic_ic = [](std::vector<bool> & org){
     double max = 0;
     double score = 0;
     size_t idx = 0;
+    auto iter = rulesetFitnessMapPtr->rbegin();
     for(int i = 0; i < numCollaborators; i++){
         ca.Reset();
         ca.AddSubsurface(tmp, subX, subY, subWidth);
-        idx = randPtr->GetUInt(0, rulesetWorldPtr->GetSize());    
+        if(rulesetFitnessMapPtr->size() > i){
+            idx = iter->second;
+            iter++;
+        }
+        else{
+            idx = randPtr->GetUInt(0, rulesetWorldPtr->GetSize());    
+        }
         ca.SetUpdateFunc(GetUpdateFunc(rulesetWorldPtr->GetOrg(idx), bBlackMask, sBlackMask));
         score = GetStaticRepFitness();
         if(score > max)
@@ -113,9 +135,16 @@ auto fit_fun_match_classic_ruleset = [](std::vector<bool> & org){
     double max = 0;
     double score = 0;
     size_t idx = 0;
+    auto iter = icFitnessMapPtr->rbegin();
     for(int i = 0; i < numCollaborators; i++){  
-        ca.Reset(); 
-        idx = randPtr->GetUInt(0, icWorldPtr->GetSize());   
+        ca.Reset();
+        if(icFitnessMapPtr->size() > i){ 
+            idx = iter->second;
+            iter++;
+        } 
+        else{      
+            idx = randPtr->GetUInt(0, icWorldPtr->GetSize());   
+        }
         std::vector<unsigned char> tmp = BitstringToVec(icWorldPtr->GetOrg(idx));
         ca.AddSubsurface(tmp, subX, subY, subWidth);
         score = GetMatchFitness();
@@ -133,9 +162,16 @@ auto fit_fun_static_rep_classic_ruleset = [](std::vector<bool> & org){
     double max = 0;
     double score = 0;
     size_t idx = 0;
+    auto iter = icFitnessMapPtr->rbegin();
     for(int i = 0; i < numCollaborators; i++){  
         ca.Reset(); 
-        idx = randPtr->GetUInt(0, icWorldPtr->GetSize());   
+        if(icFitnessMapPtr->size() > i){
+            idx = iter->second;
+            iter++;
+        }
+        else{
+            idx = randPtr->GetUInt(0, icWorldPtr->GetSize());   
+        }
         std::vector<unsigned char> tmp = BitstringToVec(icWorldPtr->GetOrg(idx));
         ca.AddSubsurface(tmp, subX, subY, subWidth);
         score = GetStaticRepFitness();

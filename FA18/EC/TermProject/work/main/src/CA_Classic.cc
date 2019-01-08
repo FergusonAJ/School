@@ -127,6 +127,9 @@ int main(int argc, char ** argv)
     }
     std::fstream icFP;
     std::fstream rulesetFP;
+    std::multimap<double, size_t> icFitnessMap, rulesetFitnessMap;
+    SetICFitnessMapPtr(&icFitnessMap);
+    SetRulesetFitnessMapPtr(&rulesetFitnessMap);
     //Main Loop
     for(size_t i = 0; i < numGens; i++){
         worldRuleset.ClearCache();
@@ -162,6 +165,14 @@ int main(int argc, char ** argv)
             rulesetFP << "Ruleset ID: " << id << std::endl;
             rulesetFP << "Fitness: " << worldRuleset.GetCache(id) << std::endl;
             rulesetFP << std::endl;
+        }
+        icFitnessMap.clear();
+        rulesetFitnessMap.clear();
+        for (size_t id = 0; id < worldIC.GetSize(); id++) {
+            icFitnessMap.insert(std::make_pair(worldIC.GetCache(id), id));
+        }
+        for (size_t id = 0; id < worldRuleset.GetSize(); id++) {
+            rulesetFitnessMap.insert(std::make_pair(worldRuleset.GetCache(id), id));
         }
         rulesetFP.close(); 
         worldIC.DoMutations();
